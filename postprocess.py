@@ -50,6 +50,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
         if(distanceMeasure=="hamming"):
             roundNumAxis = np.linspace(1, roundNum, roundNum)
             fig0, axes = plt.subplots(2, 2)
+            plotsList = [total_seqs_freqs, uniq_seqs_freqs, weighted_avgDist_per_rnd, avgDist_per_rnd]
             for i, ax in enumerate(axes.reshape(-1)):
                 ax.plot(roundNumAxis, plotsList[i])
             fig0.text(0.5, 0.04, 'Round Number', ha='center')
@@ -64,7 +65,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
                 ax.legend(prop={'size':6})
                 for j, line in enumerate(ax.lines):
-                    line.set_color(color[i])
+                    line.set_color(colors[i])
             fig1.text(0.5, 0.04, 'Round Number', ha='center')
             fig1.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig1.savefig(str(outputFileNames)+"_SELEX_Analytics_distFreqs", format='pdf')
@@ -78,12 +79,13 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
                 ax.legend(prop={'size':6})
                 for j, line in enumerate(ax.lines):
-                    line.set_color(color[i])
+                    line.set_color(colors[i])
             fig2.text(0.5, 0.04, 'Round Number', ha='center')
             fig2.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
         elif(distanceMeasure=="basepair"):
             roundNumAxis = np.linspace(1, roundNum, roundNum)
+            plotsList = [total_seqs_freqs, uniq_seqs_freqs, weighted_avgDist_per_rnd, avgDist_per_rnd]
             fig0, axes = plt.subplots(2, 2)
             for i, ax in enumerate(axes.reshape(-1)):
                 ax.plot(roundNumAxis, plotsList[i])
@@ -100,7 +102,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
                 ax.legend(prop={'size':6})
                 for j, line in enumerate(ax.lines):
-                    line.set_color(color[i])
+                    line.set_color(colors[i])
             fig1.text(0.5, 0.04, 'Round Number', ha='center')
             fig1.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig1.savefig(str(outputFileNames)+"_SELEX_Analytics_distFreqs", format='pdf')
@@ -114,11 +116,11 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
                 ax.legend(prop={'size':6})
                 for j, line in enumerate(ax.lines):
-                    line.set_color(color[i])
+                    line.set_color(colors[i])
             fig2.text(0.5, 0.04, 'Round Number', ha='center')
             fig2.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
         else:
             return
 #TEST
-#dataAnalysis(20, 15, "complex", True, "basepair")
+dataAnalysis(20, 15, "complex", True, "basepair")
