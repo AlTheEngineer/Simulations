@@ -57,29 +57,21 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             fig0.text(0.04, 0.5, 'Average Distance', va='center', rotation='vertical')
             fig0.savefig(str(outputFileNames)+"_SELEX_Analytics_distance", format='pdf')
             fig1, axes = plt.subplots(2, 3)
-            colormap = plt.cm.gist_ncar
-            colors = [colormap(i) for i in np.linspace(0, 1, 6)]
             for i, ax in enumerate(axes.reshape(-1)):
                 for d in range(3):
                     ax.plot(roundNumAxis, distFreqs[:,d+(3*i)+1], label='d = '+str(d+(3*i)+1))
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
-                ax.legend(prop={'size':6})
-                for j, line in enumerate(ax.lines):
-                    line.set_color(colors[i])
+                ax.legend(prop={'size':6}))
             fig1.text(0.5, 0.04, 'Round Number', ha='center')
             fig1.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig1.savefig(str(outputFileNames)+"_SELEX_Analytics_distFreqs", format='pdf')
             # weighted fractional sequency plots
             fig2, axes = plt.subplots(2, 3)
-            colormap = plt.cm.gist_ncar
-            colors = [colormap(i) for i in np.linspace(0, 1, 6)]
             for i, ax in enumerate(axes.reshape(-1)):
                 for d in range(3):
                     ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)+1], label='d = '+str(d+(3*i)+1))
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
                 ax.legend(prop={'size':6})
-                for j, line in enumerate(ax.lines):
-                    line.set_color(colors[i])
             fig2.text(0.5, 0.04, 'Round Number', ha='center')
             fig2.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
@@ -94,29 +86,21 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             fig0.savefig(str(outputFileNames)+"_SELEX_Analytics_distance", format='pdf')
             #figures for distance analytics
             fig1, axes = plt.subplots(2, 3)
-            colormap = plt.cm.gist_ncar
-            colors = [colormap(i) for i in np.linspace(0, 1, 6)]
             for i, ax in enumerate(axes.reshape(-1)):
                 for d in range(3):
                     ax.plot(roundNumAxis, distFreqs[:,d+(3*i)+1], label='d = '+str(d+(3*i)+1))
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
                 ax.legend(prop={'size':6})
-                for j, line in enumerate(ax.lines):
-                    line.set_color(colors[i])
             fig1.text(0.5, 0.04, 'Round Number', ha='center')
             fig1.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig1.savefig(str(outputFileNames)+"_SELEX_Analytics_distFreqs", format='pdf')
             # weighted fractional sequency plots
             fig2, axes = plt.subplots(2, 3)
-            colormap = plt.cm.gist_ncar
-            colors = [colormap(i) for i in np.linspace(0, 1, 6)]
             for i, ax in enumerate(axes.reshape(-1)):
                 for d in range(3):
                     ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)+1], label='d = '+str(d+(3*i)+1))
                 ax.ticklabel_format(syle='sci', axis='y', scilimits=(0,0))
                 ax.legend(prop={'size':6})
-                for j, line in enumerate(ax.lines):
-                    line.set_color(colors[i])
             fig2.text(0.5, 0.04, 'Round Number', ha='center')
             fig2.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
