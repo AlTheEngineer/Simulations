@@ -15,9 +15,10 @@ roundNum = int(sys.argv[6])
 pcrCycleNum = int(sys.argv[7])
 pcrYield = float(sys.argv[8])
 pcrErrorRate = float(sys.argv[9])
-samplingSize = int(sys.argv[10])
-outputFileNames = str(sys.argv[11])
-post_process = bool(sys.argv[12])
+stringency = float(sys.argv[10])
+samplingSize = int(sys.argv[11])
+outputFileNames = str(sys.argv[12])
+post_process = bool(sys.argv[13])
 
 # Instantiating classes
 Apt = Aptamers()
@@ -42,7 +43,7 @@ if(distanceMeasure == "hamming"):
             print("optimum sequences have been chosen")
             print("SELEX Round 1 has started")
             print("total number of sequences in initial library = "+str(initialSeqNum))
-            slctdSeqs = S.stochasticHammingSelection_initial(alphabetSet, seqLength, aptamerSeqs, selectionThreshold, initialSeqNum, samplingSize, outputFileNames, r)
+            slctdSeqs = S.stochasticHammingSelection_initial(alphabetSet, seqLength, aptamerSeqs, selectionThreshold, initialSeqNum, samplingSize, outputFileNames, r, stringency)
             print("selection carried out for R0")
             amplfdSeqs = Amplify.randomPCR_with_ErrorsAndBias_FASTv2(slctdSeqs, seqLength, pcrCycleNum, pcrYield, pcrErrorRate, aptamerSeqs, alphabetSet, distanceMeasure)
             print("amplification carried out for R0")
@@ -59,7 +60,7 @@ if(distanceMeasure == "hamming"):
             totalSeqNum, uniqSeqNum = utils.seqNumberCounter(amplfdSeqs)
             print("total number of sequences in initial pool = "+str(totalSeqNum))
             print("total number of unique sequences in initial pool = "+str(int(uniqSeqNum)))
-            slctdSeqs = S.stochasticHammingSelection(alphabetSet, seqLength, amplfdSeqs, selectionThreshold, uniqSeqNum, totalSeqNum, samplingSize, outputFileNames, r)
+            slctdSeqs = S.stochasticHammingSelection(alphabetSet, seqLength, amplfdSeqs, selectionThreshold, uniqSeqNum, totalSeqNum, samplingSize, outputFileNames, r, stringency)
             print("Selection carried for R"+str(r+1))
             del(amplfdSeqs)
             amplfdSeqs = Amplify.randomPCR_with_ErrorsAndBias_FASTv2(slctdSeqs, seqLength, pcrCycleNum, pcrYield, pcrErrorRate, aptamerSeqs, alphabetSet, distanceMeasure)
@@ -90,7 +91,7 @@ elif(distanceMeasure == "basepair"):
             print("optimum sequences have been chosen")
             print("SELEX Round 1 has started")
             print("total number of sequences in initial library = "+str(initialSeqNum))
-            slctdSeqs = S.stochasticBasePairSelection_initial(alphabetSet, seqLength, aptamerSeqs, selectionThreshold, initialSeqNum, samplingSize, outputFileNames, r)
+            slctdSeqs = S.stochasticBasePairSelection_initial(alphabetSet, seqLength, aptamerSeqs, selectionThreshold, initialSeqNum, samplingSize, outputFileNames, r, stringency)
             print("selection carried out for R0")
             amplfdSeqs = Amplify.randomPCR_with_ErrorsAndBias_FASTv2(slctdSeqs, seqLength, pcrCycleNum, pcrYield, pcrErrorRate, aptamerSeqs, alphabetSet, distanceMeasure)
             print("amplification carried out for R0")
@@ -107,7 +108,7 @@ elif(distanceMeasure == "basepair"):
             totalSeqNum, uniqSeqNum = utils.seqNumberCounter(amplfdSeqs)
             print("total number of sequences in initial pool = "+str(totalSeqNum))
             print("total number of unique sequences in initial pool = "+str(int(uniqSeqNum)))
-            slctdSeqs = S.stochasticBasePairSelection(alphabetSet, seqLength, amplfdSeqs, selectionThreshold, uniqSeqNum, totalSeqNum, samplingSize, outputFileNames, r)
+            slctdSeqs = S.stochasticBasePairSelection(alphabetSet, seqLength, amplfdSeqs, selectionThreshold, uniqSeqNum, totalSeqNum, samplingSize, outputFileNames, r, stringency)
             print("Selection carried for R"+str(r+1))
             del(amplfdSeqs)
             amplfdSeqs = Amplify.randomPCR_with_ErrorsAndBias_FASTv2(slctdSeqs, seqLength, pcrCycleNum, pcrYield, pcrErrorRate, aptamerSeqs, alphabetSet, distanceMeasure)
@@ -120,13 +121,12 @@ elif(distanceMeasure == "basepair"):
                 nxtRnd.write(str(seq)+'\t'+str(int(amplfdSeqs[seqIdx][0]))+'\t'+str(int(amplfdSeqs[seqIdx][1]))+'\n') #write idx and count for now
             nxtRnd.close()
     print("SELEX completed")
-    if(post_process==True):
-        print("Data post-processing has started...")
-        dataAnalysis(seqLength, roundNum, outputFileNames, post_process, distanceMeasure)
-        print("Data post-processing is complete")
-        print("The Simulation has ended")
-    else:
-        print("The Simulation has ended without post-processing")
 else:
     print("Invalid argument for distance measure")
-
+if(post_process==True):
+    print("Data post-processing has started...")
+    dataAnalysis(seqLength, roundNum, outputFileNames, post_process, distanceMeasure)
+    print("Data post-processing is complete")
+    print("The Simulation has ended")
+else:
+    print("The Simulation has ended without post-processing")

@@ -8,6 +8,7 @@ import operator
 from collections import OrderedDict
 from scipy import stats
 import numpy as np
+from Distance import Distance as d
 
 
 
@@ -43,4 +44,24 @@ def rvd(X, X_sum, distName):
         probs[i] = seq[1]/X_sum
     dist = stats.rv_discrete(name=distName, values=(seqIdxs, probs))
     return dist
+
+def bias_avg(seqFile, seqLength):
+    bias = 0
+    w_bias = 0
+    totalSeqs = 0
+    uniqSeqs = 0
+    with open(seqFile, 'r') as f:
+        for line in f:
+            row = line.split()
+            seq = row[0]
+            bias += d.bias_func(seq, seqLength)
+            w_bias += int(row[1])*d.bias_func(seq, seqLength)
+            totalSeqs += int(row[1])
+            uniqSeqs += 1
+    avg_bias = bias/uniqSeqs
+    weighted_avg_bias = w_bias/totalSeqs
+    return weighted_avg_bias, avg_bias
+
+#bias_avg("window_R14", 20)
+
 

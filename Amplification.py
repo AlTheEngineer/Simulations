@@ -37,6 +37,7 @@ class Amplification:
         # count number of seqs in selected pool
         totalseqs = 0
         uniqSeqs = 0
+        #compute number of total and unique seqs
         for i, seqIdx in enumerate(slctdSeqs):
             uniqSeqs += 1
             totalseqs += slctdSeqs[seqIdx][0]
@@ -45,8 +46,8 @@ class Amplification:
         # calculate probabilities of different possible mutation numbers
         mutNumProbs = mut.get_mutation_probabilities_original()
         print mutNumProbs
+        # compute mutation distribution to draw mutation numbers
         mutDist = mut.get_mutation_distribution_original()
-        print mutDist.rvs(size=1000000)
         print("Discrete Mutation Distribution has been computed")
     # PCR Amplification
         totalseqs = 0
@@ -202,7 +203,6 @@ class Amplification:
         # initialize Mutation object from class
         mut = Mutation(seqLength=seqLength, errorRate=errorRate, 
                         pcrCycleNum=pcrCycleNum, pcrYld=pcrYld)
-        # count number of seqs in selected pool
         totalseqs = 0
         uniqSeqs = 0
         #compute total seq num, unique seq num, and transfer info to x

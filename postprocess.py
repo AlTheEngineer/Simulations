@@ -143,9 +143,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             fig2.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
             fig1.text(0.5, 0.95, 'Total Sequences', ha='center')
             fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
-            print distFreqs
-            print weighted_distFreqs
         else:
             return
 #TEST
-dataAnalysis(20, 25, "window", True, "hamming")
+#dataAnalysis(20, 25, "window", True, "hamming")
