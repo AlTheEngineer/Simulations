@@ -1,4 +1,5 @@
 import sys, time
+import gc
 from numpy import random
 import numpy as np
 import linecache
@@ -36,6 +37,7 @@ class Selection:
                 if(selectedSeqs == selectionThreshold):
                     del(randIdxs)
                     del(randHamms)
+                    gc.collect()
                     return slctdSeqs
                 elif(randSeqDist < randHamms[i]):
                     if(randIdx in slctdSeqs):
@@ -90,6 +92,8 @@ class Selection:
             x[i][1] = seqPool[seqIdx][0]
             x[i][2] = seqPool[seqIdx][1]
             x[i][3] = seqPool[seqIdx][2]
+        del(seqPool)
+        gc.collect()
         print("Selection sample distribution being computed...")
         #compute sampling distribution for selection
         selectionDist = utils.rvd(x, totalSeqNum, "selectionDist")
@@ -102,7 +106,7 @@ class Selection:
                 seq = Apt.pseudoAptamerGenerator(seqIdx, alphabetSet, seqLength)
                 s.write(str(seq)+'\t'+str(int(x[seqIdx][1]))+'\n')
         print("Sampling has completed")
-        for i, seqIdx in enumerate(seqPool):
+        for i, seqIdx in enumerate(x):
             x[i][1] = 0
         x = self.selectionProcess(x, selectionThreshold, 
                                   selectionDist, seqLength, 
@@ -111,6 +115,8 @@ class Selection:
         for seqInfo in x:
             #change it so that seqInfo are added as on np array, without setdefault
             slctdSeqs[int(seqInfo[0])] = seqInfo[1:]
+        del(x)
+        gc.collect()
         print("sequence selection has been carried out")
         return slctdSeqs
 
@@ -130,6 +136,7 @@ class Selection:
                 if(selectedSeqs == selectionThreshold):
                     del(randIdxs)
                     del(randHamms)
+                    gc.collect()
                     return slctdSeqs
                 elif(randSeqDist < randHamms[i]):
                     if(randIdx in slctdSeqs):
@@ -187,6 +194,8 @@ class Selection:
             x[i][2] = seqPool[seqIdx][1]
             #seq bias
             x[i][3] = seqPool[seqIdx][2]
+        del(seqPool)
+        gc.collect()
         print("Selection sample distribution being computed...")
         #distribution computed using count of each unique seq
         selectionDist = utils.rvd(x, totalSeqNum, "selectionDist")
@@ -202,7 +211,7 @@ class Selection:
                 s.write(str(seq)+'\t'+str(int(x[seqIdx][1]))+'\n')
         print("Sampling has completed")
         #reset all seq counts prior to selection
-        for i, seqIdx in enumerate(seqPool):
+        for i, seqIdx in enumerate(x):
             x[i][1] = 0
         #draw a bunch of random seqs
         x = self.selectionProcess(x, selectionThreshold, selectionDist, 
@@ -212,6 +221,8 @@ class Selection:
         #transfer info back to selected pool
         for seqInfo in x:
             slctdSeqs[int(seqInfo[0])] = seqInfo[1:]
+        del(x)
+        gc.collect()
         print("sequence selection has been carried out")
         return slctdSeqs
 
@@ -227,6 +238,7 @@ class Selection:
                 if(selectedSeqs == selectionThreshold):
                     del(randIdxs)
                     del(randHamms)
+                    gc.collect()
                     return x
                 elif(int(x[randIdx][2]) < randHamms[i]):
                     x[randIdx][1] += 1
