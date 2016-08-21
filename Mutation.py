@@ -1,4 +1,5 @@
 import time, sys
+import gc
 import linecache
 from itertools import izip, imap
 import operator
@@ -796,6 +797,8 @@ class Mutation(object):
                         amplfdSeqs[mutatedSeqIdx][0] += mutantCount
                         #decrement wild-type seq count in amplified pool
                         amplfdSeqs[seqIdx][0] -= wildTypeCount
+        del(mutatedPool)
+        gc.collect()
         print("Mutation has been carried out")
         return amplfdSeqs
 

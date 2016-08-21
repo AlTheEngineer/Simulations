@@ -271,6 +271,8 @@ class Amplification:
                 for mutNum in muts:
                     #increment copy number to be mutated
                     y[i][mutNum+1] += 1
+        del(x)
+        gc.collect()
         print("Amplification carried out")
         print("Sequence selection for mutation has started...")
         #remove all mutation numbers with zero copies to be mutated
@@ -279,6 +281,8 @@ class Amplification:
         for mutInfo in y:
             #add to mutation pool with it's corresponding mutation info
             mutatedPool[int(mutInfo[0])] = mutInfo[1:][mutInfo[1:] != 0]
+        del(y)
+        gc.collect()
         print("Mutation selection has been carried out")
         print("Mutant generation has started...")
         if(distance == "hamming"):
@@ -287,11 +291,17 @@ class Amplification:
                                                      amplfdSeqs=slctdSeqs, 
                                                      aptamerSeqs=aptamerSeqs, 
                                                      alphabetSet=alphabetSet)
+            del(slctdSeqs)
+            del(mutatedPool)
+            gc.collect()
         elif(distance == "basepair"):
             amplfdSeqs = mut.generate_mutants_2D(mutatedPool=mutatedPool,
                                                  amplfdSeqs=slctdSeqs,
                                                  aptamerSeqs=aptamerSeqs,
                                                  alphabetSet=alphabetSet)
+            del(slctdSeqs)
+            del(mutatedPool)
+            gc.collect()
         else:
             print("argument given for distance is invalid")
             return
