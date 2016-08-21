@@ -8,6 +8,11 @@ import operator
 from collections import OrderedDict
 from scipy import stats
 import numpy as np
+from scipy.misc import comb
+import matplotlib
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 from Distance import Distance as d
 
 
@@ -63,5 +68,18 @@ def bias_avg(seqFile, seqLength):
     return weighted_avg_bias, avg_bias
 
 #bias_avg("window_R14", 20)
-
-
+def seq_div_hamm(seqLength, alphabetSet):
+    uniqSeqNum_per_dist = np.zeros(seqLength+1)
+    for h in xrange(seqLength+1):
+        uniqSeqNum_per_dist[h] = (len(alphabetSet)-1)*comb(seqLength, h)
+    hammDistAxis = np.linspace(0, seqLength+1, seqLength+1)
+    fig, ax = plt.subplots(1,1)
+    ax.plot(hammDistAxis, uniqSeqNum_per_dist)
+    ax.grid()
+    ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    fig.text(0.5, 0.95, 'Unique Sequences', ha='center')
+    fig.text(0.5, 0.04, 'Hamming Distance', ha='center')
+    fig.text(0.04, 0.5, 'Frequency', va='center', rotation='vertical')
+    fig.savefig("SELEX_Analytics_seqDiv_20nt", format='pdf')
+    return 0
+#seq_div_hamm(20, 'ACTG')
