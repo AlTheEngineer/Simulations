@@ -6,7 +6,7 @@ import numpy as np
 from numpy.random import binomial as binom
 from numpy.random import poisson
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import math
