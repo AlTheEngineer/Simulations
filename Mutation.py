@@ -161,7 +161,7 @@ class Mutation(object):
                # if the mutation is carried out on less than 10,000 copies, draw random numbers...:(
                 if mutFreq == 0:
                     continue
-                if mutFreq < 10000:
+                elif mutFreq < 10000:
                     # draw random cycle numbers after which the sequences were drawn for mutation
                     cycleNums = cycleNumDist.rvs(size=mutFreq)
                     #generate the wild-type sequence string
@@ -678,7 +678,9 @@ class Mutation(object):
             for mutNum, mutFreq in enumerate(mutatedPool[seqIdx]): 
                 mutFreq = int(mutatedPool[seqIdx][mutNum])
                # if the mutation is carried out on less than 10,000 copies, draw random numbers...:(
-                if mutFreq < 10000:
+                if mutFreq == 0:
+                    continue
+                elif mutFreq < 10000:
                     # draw random cycle numbers after which the sequences were drawn for mutation
                     cycleNums = cycleNumDist.rvs(size=mutFreq)
                     #generate the wild-type sequence string
@@ -1206,7 +1208,9 @@ class Mutation(object):
             for mutNum, mutFreq in enumerate(mutatedPool[seqIdx]): 
                 mutFreq = int(mutatedPool[seqIdx][mutNum])
                # if the mutation is carried out on less than 10,000 copies, draw random numbers...:(
-                if mutFreq < 10000:
+                if mutFreq == 0:
+                    continue
+                elif mutFreq < 10000:
                     # draw random cycle numbers after which the sequences were drawn for mutation
                     cycleNums = cycleNumDist.rvs(size=mutFreq)
                     #generate the wild-type sequence string
