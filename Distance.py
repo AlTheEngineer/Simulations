@@ -1,24 +1,77 @@
-import time
+import sys, time
 import random
 import linecache
 from itertools import izip, imap, islice
 import operator
 from collections import OrderedDict
+import numpy as np
 from scipy import stats
-
-def hamming_func(str1, str2):
-   assert len(str1) == len(str2)
-   ne = operator.ne
-   return sum(imap(ne, str1, str2))
-
+import utils
+from utils import apt_loopFinder
+#append path for ViennaRNA module
+sys.path.append("/local/data/public/aaaa3/Simulations/ViennaRNA/lib/python2.7/site-packages/")
+import RNA
+from RNA import fold, bp_distance
 
 class Distance:
-
-    def hamming_func(self, str1, str2):
-        assert len(str1) == len(str2)
-        ne = operator.ne
-        return sum(imap(ne, str1, str2))
     
+    def lavenshtein_func(self , loop1, loop2):
+        if len(loop1) < len(loop2):
+            return self.lavenshtein_func(loop2, loop1)
+        if len(loop2) == 0:
+            return len(loop1)
+        loop1 = np.array(tuple(loop1))
+        loop2 = np.array(tuple(loop2))
+        prev_row = np.arange(loop2.size + 1)
+        for nt in loop1:
+            curr_row = prev_row +1
+            curr_row[1:] = np.minimum(curr_row[1:], np.add(prev_row[:-1], loop2 != nt))
+            curr_row[1:] = np.minimum(curr_row[1:], curr_row[0:-1] + 1)
+            prev_row = curr_row
+        loop2_dist = prev_row[-1]
+        return loop2_dist
+
+
+    def hamming_func(self, seq1, seq2):
+        len(seq1) == len(seq2)
+        ne = operator.ne
+        seq2_dist = sum(imap(ne, seq1, seq2))
+        return seq2_dist
+    
+    def bp_func(self, seq1_struct, seq2):
+        seq2_struct = fold(seq2)[0]
+        seq2_dist = bp_distance(seq1_struct, seq2_struct)
+        return seq2_dist
+
+    def loop_func(self, seq1, seq1_struct, seq1_loop, seq2, seqLength):
+        seq2_struct = fold(seq2)[0]
+        base = None
+        baseIdx = 0
+        while(base != ')' and baseIdx < seqLength-1):
+            base = seq2_struct[baseIdx]
+            baseIdx += 1
+        if(baseIdx == seqLength-1):
+            while(base != '(' and baseIdx > 0):
+                base = seq2_struct[baseIdx-1]
+                baseIdx -= 1
+            if(baseIdx == 0):
+                seq2_loop = seq2
+            else:
+                seq2_loop = seq2[baseIdx:]
+        else:
+            loop_end = baseIdx-1
+            while(base != '('):
+                baseIdx -= 1
+                base = seq2_struct[baseIdx-1]
+            seq2_loop = seq2[baseIdx:loop_end]
+        seq2_loopDist = self.lavenshtein_func(seq1_loop, seq2_loop)
+        seq2_bpDist = bp_distance(seq1_struct, seq2_struct)
+        seq2_dist = seq2_loopDist + seq2_bpDist
+        return seq2_dist
+#TEST
+#d = Distance()
+#seq_dist = d.loop_func(he4_seq, he4_struct, ex_seq)
+
     def bias_func(self, seq, seqLen):
         pyrNum = 0
         for nt in seq[:-1]:

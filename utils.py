@@ -13,7 +13,7 @@ import matplotlib
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
-from Distance import Distance as d
+import Distance
 
 
 
@@ -35,11 +35,22 @@ def convert_to_distribution(x, y, distName):
     xDist = stats.rv_discrete(name=distName, values=(x, y))
     return xDist
 
-# Add method for computing the binomial coefficient
+def apt_loopFinder(apt_seq, apt_struct):
+    base = None
+    baseIdx = 0
+    while(base != ')'):
+        base = apt_struct[baseIdx]
+        baseIdx += 1
+    loop_end = baseIdx-1
+    while(base != '('):
+        baseIdx -= 1
+        base = apt_struct[baseIdx-1]
+    apt_loop = apt_seq[baseIdx:loop_end]
+    return apt_loop
 
 # Add method for computing the L1 norm 
 
-# Add method to convert probability vectors to discrete distributions
+
 
 def rvd(X, X_sum, distName):
     seqIdxs = np.zeros(X.shape[0])
