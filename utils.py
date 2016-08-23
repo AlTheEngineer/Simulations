@@ -38,15 +38,30 @@ def convert_to_distribution(x, y, distName):
 def apt_loopFinder(apt_seq, apt_struct):
     base = None
     baseIdx = 0
-    while(base != ')'):
+    while(base != ')' and baseIdx < seqLength):
         base = apt_struct[baseIdx]
         baseIdx += 1
-    loop_end = baseIdx-1
-    while(base != '('):
-        baseIdx -= 1
-        base = apt_struct[baseIdx-1]
-    apt_loop = apt_seq[baseIdx:loop_end]
-    return apt_loop
+    if(baseIdx == seqLength):
+        while(base != '('and baseIdx > 1):
+            baseIdx -= 1
+            base = apt_struct[baseIdx-1]
+        if(baseIdx == 1):
+            apt_loop = apt_seq
+            return apt_loop
+        else:
+            apt_loop = apt_seq[baseIdx:]
+            return apt_loop
+    else:
+        loop_end = baseIdx-1
+        while(base != '(' and baseIdx > 1):
+            baseIdx -= 1
+            base = apt_struct[baseIdx-1]
+        if(baseIdx == 1):
+            apt_loop = apt_seq[:loop_end]
+            return apt_loop
+        else:
+            apt_loop = apt_seq[baseIdx:loop_end]
+            return apt_loop
 
 # Add method for computing the L1 norm 
 
@@ -77,6 +92,22 @@ def bias_avg(seqFile, seqLength):
     avg_bias = bias/uniqSeqs
     weighted_avg_bias = w_bias/totalSeqs
     return weighted_avg_bias, avg_bias
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #bias_avg("window_R14", 20)
 def seq_div_hamm(seqLength, alphabetSet):
