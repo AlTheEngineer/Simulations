@@ -16,8 +16,6 @@ import matplotlib.ticker as mtick
 import Distance
 
 
-
-
 def seqNumberCounter(seqPool):
     totalSeqNum = int(0)
     uniqSeqNum = int(0)
@@ -65,8 +63,6 @@ def apt_loopFinder(apt_seq, apt_struct):
 
 # Add method for computing the L1 norm 
 
-
-
 def rvd(X, X_sum, distName):
     seqIdxs = np.zeros(X.shape[0])
     probs = np.zeros(X.shape[0])
@@ -93,35 +89,63 @@ def bias_avg(seqFile, seqLength):
     weighted_avg_bias = w_bias/totalSeqs
     return weighted_avg_bias, avg_bias
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #bias_avg("window_R14", 20)
 def seq_div_hamm(seqLength, alphabetSet):
     uniqSeqNum_per_dist = np.zeros(seqLength+1)
     for h in xrange(seqLength+1):
-        uniqSeqNum_per_dist[h] = (len(alphabetSet)-1)*comb(seqLength, h)
-    hammDistAxis = np.linspace(0, seqLength+1, seqLength+1)
+        uniqSeqNum_per_dist[h] = (len(alphabetSet)-1)**(h)*comb(seqLength, h)
+    hammDistAxis = np.linspace(0, seqLength, seqLength+1)
+    hammDistAxis_smooth = np.linspace(0, seqLength, 200)
+    uniqSeqNum_smooth = spline(hammDistAxis, uniqSeqNum_per_dist, hammDistAxis_smooth)
     fig, ax = plt.subplots(1,1)
-    ax.plot(hammDistAxis, uniqSeqNum_per_dist)
-    ax.grid()
+    ax.plot(hammDistAxis_smooth, uniqSeqNum_smooth)
     ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     fig.text(0.5, 0.95, 'Unique Sequences', ha='center')
     fig.text(0.5, 0.04, 'Hamming Distance', ha='center')
     fig.text(0.04, 0.5, 'Frequency', va='center', rotation='vertical')
     fig.savefig("SELEX_Analytics_seqDiv_20nt", format='pdf')
     return 0
-#seq_div_hamm(20, 'ACTG')
+#seq_div_hamm(20, 'ACGT')
+
+def distance_range(scale, ref_seq, seqLength, alphabetSet):
+    ref_struct = fold(ref_seq)[0]
+    ref_loop = apt_loopFinder(ref_seq, ref_struct)
+    hamm_dist_array = np.zeros(int(seqLength*1.5))
+    bp_dist_array = np.zeros(int(seqLength*1.5))
+    loop_dist_array = np.zeros(int(seqLength*1.5))
+    randIdxs = random.randint(0, 4**(20)-1, size=scale)
+    for i in xrange(scale):
+        randIdx = randIdxs[i]
+        randSeq = apt.pseudoAptamerGenerator(randIdx, alphabetSet, seqLength)
+        randHammDist = d.hamming_func(randSeq, ref_seq)
+        randbpDist = d.bp_func(ref_struct, randSeq)
+        randLoopDist = d.loop_func(ref_seq, ref_struct, ref_loop, randSeq, seqLength)
+        hamm_dist_array[randHammDist] += 1
+        bp_dist_array[randbpDist] += 1
+        loop_dist_array[randLoopDist] += 1
+    for dist in xrange(int(seqLength*1.5)):
+        hamm_dist_array[dist] /= scale
+        bp_dist_array[dist] /= scale
+        loop_dist_array[dist] /= scale
+    fig, axis = plt.subplots(1,1)
+    distAxis = np.linspace(0, int(seqLength+9), int(seqLength+10))
+    distAxis_smooth = np.linspace(0, int(seqLength+9), 200)
+    hamm_dist_smooth = spline(distAxis, hamm_dist_array, distAxis_smooth)
+    bp_dist_smooth = spline(distAxis, bp_dist_array, distAxis_smooth)
+    loop_dist_smooth = spline(distAxis, loop_dist_array, distAxis_smooth)
+    axis.plot(distAxis_smooth, hamm_dist_smooth, label='Hamming')
+    axis.plot(distAxis_smooth, bp_dist_smooth, label='Base-Pair')
+    axis.plot(distAxis_smooth, loop_dist_smooth, label='Loop')
+    axis.set_xlim([0, 25])
+    axis.set_ylim([0, 0.4])
+    axis.legend()
+    fig.text(0.5, 0.04, 'Distance', ha='center')
+    fig.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
+    fig.text(0.5, 0.95, 'Distance Distributions', ha='center')
+    fig.savefig("SELEX_Analytics_distance_distributions", format='pdf')
+    return hamm_dist_array
+
+
+
+#distance_range(10000, "GTACGACAGTCATCCTACAC", 20, 'ACGT')
+

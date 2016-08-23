@@ -66,7 +66,7 @@ class Distance:
             seq2_loop = seq2[baseIdx:loop_end]
         seq2_loopDist = self.lavenshtein_func(seq1_loop, seq2_loop)
         seq2_bpDist = bp_distance(seq1_struct, seq2_struct)
-        seq2_dist = seq2_loopDist + seq2_bpDist
+        seq2_dist = int(seq2_loopDist + seq2_bpDist)
         return seq2_dist
 #TEST
 #d = Distance()
