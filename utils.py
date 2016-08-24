@@ -9,6 +9,7 @@ from collections import OrderedDict
 from scipy import stats
 import numpy as np
 from scipy.misc import comb
+from scipy.interpolate import spline
 import matplotlib
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
@@ -33,7 +34,7 @@ def convert_to_distribution(x, y, distName):
     xDist = stats.rv_discrete(name=distName, values=(x, y))
     return xDist
 
-def apt_loopFinder(apt_seq, apt_struct):
+def apt_loopFinder(apt_seq, apt_struct, seqLength):
     base = None
     baseIdx = 0
     while(base != ')' and baseIdx < seqLength):
@@ -88,6 +89,33 @@ def bias_avg(seqFile, seqLength):
     avg_bias = bias/uniqSeqs
     weighted_avg_bias = w_bias/totalSeqs
     return weighted_avg_bias, avg_bias
+
+def bias_avg_per_dist(seqFile, seqLength):
+    bias_per_dist = np.zeros(seqLength+1)
+    w_bias_per_dist = np.zeros(seqLength+1)
+    totalSeqs_per_dist = np.zeros(seqLength+1)
+    uniqSeqs_per_dist = np.zeros(seqLength+1)
+    with open(seqFile, 'r') as f:
+        for line in f:
+            row = line.split()
+            #grab sequence
+            seq = row[0]
+            #grab frequency
+            freq = int(row[1])
+            #grab distance
+            dist = int(row[2])
+            uniqSeqs_per_dist[dist] += 1
+            totalSeqs_per_dist[dist] += freq
+            #add bias to corresponding dist
+            bias_per_dist[dist] += d.bias_func(seq, seqLength)
+            w_bias_per_dist[dist] += freq*d.bias_func(seq, seqLength)
+    #calculate averages
+    for dist in xrange(seqLength+1):
+        if(uniqSeqs_per_dist[dist] > 0):
+            bias_per_dist[dist] /= uniqSeqs_per_dist[dist]
+            w_bias_per_dist[dist] /= totalSeqs_per_dist[dist]
+    return w_bias_per_dist, bias_per_dist
+
 
 #bias_avg("window_R14", 20)
 def seq_div_hamm(seqLength, alphabetSet):
