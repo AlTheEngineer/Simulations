@@ -65,7 +65,7 @@ class Selection:
         slctdSeqs = {} 
         selectedSeqs = 0
         aptStruct = fold(aptPool)[0]
-        aptLoop = apt_loopFinder(aptPool, aptStruct)
+        aptLoop = apt_loopFinder(aptPool, aptStruct, seqLength)
         print("Selection has started")
         #stochastic selection until threshold is met   
         slctdSeqs = self.selectionProcess_loop_initial(slctdSeqs, aptPool, 
