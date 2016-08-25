@@ -16,6 +16,13 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import Distance
 
+#append path for ViennaRNA module
+sys.path.append("/local/data/public/aaaa3/Simulations/ViennaRNA/lib/python2.7/site-packages/")
+import RNA
+from RNA import fold, bp_distance, svg_rna_plot
+
+
+
 
 def seqNumberCounter(seqPool):
     totalSeqNum = int(0)
@@ -91,10 +98,10 @@ def bias_avg(seqFile, seqLength):
     return weighted_avg_bias, avg_bias
 
 def bias_avg_per_dist(seqFile, seqLength):
-    bias_per_dist = np.zeros(seqLength+1)
-    w_bias_per_dist = np.zeros(seqLength+1)
-    totalSeqs_per_dist = np.zeros(seqLength+1)
-    uniqSeqs_per_dist = np.zeros(seqLength+1)
+    bias_per_dist = np.zeros(seqLength+5)
+    w_bias_per_dist = np.zeros(seqLength+5)
+    totalSeqs_per_dist = np.zeros(seqLength+5)
+    uniqSeqs_per_dist = np.zeros(seqLength+5)
     with open(seqFile, 'r') as f:
         for line in f:
             row = line.split()
@@ -110,11 +117,11 @@ def bias_avg_per_dist(seqFile, seqLength):
             bias_per_dist[dist] += d.bias_func(seq, seqLength)
             w_bias_per_dist[dist] += freq*d.bias_func(seq, seqLength)
     #calculate averages
-    for dist in xrange(seqLength+1):
+    for dist in xrange(seqLength+5):
         if(uniqSeqs_per_dist[dist] > 0):
             bias_per_dist[dist] /= uniqSeqs_per_dist[dist]
             w_bias_per_dist[dist] /= totalSeqs_per_dist[dist]
-    return w_bias_per_dist, bias_per_dist
+    return w_bias_per_dist[:seqLength+1], bias_per_dist[:seqLength+1]
 
 
 #bias_avg("window_R14", 20)
@@ -173,7 +180,95 @@ def distance_range(scale, ref_seq, seqLength, alphabetSet):
     fig.savefig("SELEX_Analytics_distance_distributions", format='pdf')
     return hamm_dist_array
 
+def aptamer_structs(fileNames, seqLength, roundNum, rounds='final'):
+    if(rounds == 'final'):
+        top_seq_info = [0,0]
+        with open(fileNames+"_R"+str(roundNum), 'r') as f:
+            for line in f:
+                row = line.split()
+                seq = str(row[0])
+                count = int(row[1])
+                if(count > top_seq_info[1]):
+                    top_seq_info[0] = seq
+                    top_seq_info[1] = count
+        with open(fileNames+"_R"+str(roundNum)+"_topstructure_info", 'w') as f:
+            seq = top_seq_info[0]
+            seq_struct = fold(seq)[0]
+            seq_mfe = fold(seq)[1]
+            seq_count = top_seq_info[1]
+            f.write(seq+'\t'+seq_struct+'\t'+str(seq_mfe)+'\t'+str(seq_count)+'\n')
+        svg_rna_plot(seq, seq_struct, fileNames+"_R"+str(roundNum)+"_topstructure.svg")
+        return 0
+    elif(rounds == 'all'):
+        top_seqs_info = []
+        for rnd in xrange(roundNum):
+            with open(fileNames+"_R"+str(rnd+1), 'r') as f:
+                for line in f:
+                    row = line.split()
+                    seq = str(row[0])
+                    count = int(row[1])
+                    if(count > top_seq_info[1]):
+                        top_seqs_info.append([seq,count])
+        with open(fileNames+"_R"+str(roundNum)+"_topstructures_info", 'w') as f:
+            for rnd in xrange(roundNum):
+                seq = top_seqs_info[rnd][0]
+                seq_struct = fold(seq)[0]
+                seq_mfe = fold(seq)[1]
+                seq_count = top_seqs_info[rnd][1]
+                f.write(seq+'\t'+seq_struct+'\t'+str(seq_mfe)+'\t'+str(seq_count)+'\n')
+                svg_rna_plot(seq, seq_struct, fileNames+"_R"+str(rnd+1)+"_topstructure.svg")
+        return 0
+    else:
+        print("invalid option for string varible rounds. Exiting...")
 
+#aptamer_structs('he4_hamm_small', 20, 40, 'final')
 
-#distance_range(10000, "GTACGACAGTCATCCTACAC", 20, 'ACGT')
+def aptamer_structs_aff(fileNames, seqLength, roundNum, rounds='final'):
+    if(rounds == 'final'):
+        top_seq_info = [0,0,np.infty]
+        with open(fileNames+"_R"+str(roundNum), 'r') as f:
+            for line in f:
+                row = line.split()
+                seq = str(row[0])
+                count = int(row[1])
+                dist = int(row[2])
+                if(dist < top_seq_info[2]):
+                    top_seq_info[0] = seq
+                    top_seq_info[1] = count
+                    top_seq_info[2] = dist
+        with open(fileNames+"_R"+str(roundNum)+"_affstructure_info", 'w') as f:
+            seq = top_seq_info[0]
+            seq_struct = fold(seq)[0]
+            seq_mfe = fold(seq)[1]
+            seq_count = top_seq_info[1]
+            seq_dist = top_seq_info[2]
+            f.write(seq+'\t'+seq_struct+'\t'+str(seq_mfe)+'\t'+str(seq_count)+'\t'+str(seq_dist)+'\n')
+        svg_rna_plot(seq, seq_struct, fileNames+"_R"+str(roundNum)+"_affstructure.svg")
+        return 0
+    elif(rounds == 'all'):
+        top_seqs_info = []
+        for rnd in xrange(roundNum):
+            with open(fileNames+"_R"+str(rnd+1), 'r') as f:
+                for line in f:
+                    row = line.split()
+                    seq = str(row[0])
+                    count = int(row[1])
+                    dist = int(row[2])
+                    if(dist > top_seq_info[2]):
+                        top_seqs_info.append([seq,count,dist])
+        with open(fileNames+"_R"+str(roundNum)+"_affstructures_info", 'w') as f:
+            for rnd in xrange(roundNum):
+                seq = top_seqs_info[rnd][0]
+                seq_struct = fold(seq)[0]
+                seq_mfe = fold(seq)[1]
+                seq_count = top_seqs_info[rnd][1]
+                seq_dist = top_seqs_info[rnd][2]
+                f.write(seq+'\t'+seq_struct+'\t'+str(seq_mfe)+'\t'+str(seq_count)++'\t'+str(seq_dist)+'\n')
+                svg_rna_plot(seq, seq_struct, fileNames+"_R"+str(rnd+1)+"_affstructure.svg")
+        return 0
+    else:
+        print("invalid option for string varible rounds. Exiting...")
+
+#aptamer_structs_aff('he4_bp_small', 20, 40, 'final')
+
 

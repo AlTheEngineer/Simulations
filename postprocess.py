@@ -11,8 +11,8 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
     weighted_avgDist_per_rnd = np.zeros(roundNum)
     total_seqs_freqs = np.zeros(roundNum)
     uniq_seqs_freqs = np.zeros(roundNum)
-    distFreqs = np.zeros((roundNum, seqLength+1))
-    weighted_distFreqs = np.zeros((roundNum, seqLength+1))
+    distFreqs = np.zeros((roundNum, seqLength+5))
+    weighted_distFreqs = np.zeros((roundNum, seqLength+5))
     for rnd in xrange(roundNum):
         total_seq_num = 0
         uniq_seq_num = 0
@@ -32,7 +32,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
         total_seqs_freqs[rnd] = total_seq_num
         uniq_seqs_freqs[rnd] = uniq_seq_num
     for rnd in xrange(roundNum):
-	    for i in xrange(seqLength+1):
+	    for i in xrange(seqLength+5):
 		    distFreqs[rnd][i] /= uniq_seqs_freqs[rnd]
 		    weighted_distFreqs[rnd][i] /= total_seqs_freqs[rnd]
     with open(outputFileNames+"_processed_results", 'w') as p:
@@ -53,7 +53,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             fig0, axes = plt.subplots(2, 2)
             cm = plt.cm.gist_ncar
             plotsList = [total_seqs_freqs, uniq_seqs_freqs, weighted_avgDist_per_rnd, avgDist_per_rnd]
-            colors = [cm(i) for i in np.linspace(0, 0.9, seqLength+1)]
+            colors = [cm(i) for i in np.linspace(0, 0.9, seqLength-1)]
             basic_colors = ['b', 'g', 'r', 'y']
             for i, ax in enumerate(axes.reshape(-1)):
                 ax.plot(roundNumAxis, plotsList[i], color=basic_colors[i])
@@ -71,8 +71,18 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             fig0.savefig(str(outputFileNames)+"_SELEX_Analytics_distance", format='pdf')
             fig1, axes = plt.subplots(2, 3)
             for i, ax in enumerate(axes.reshape(-1)):
-                for d in range(3):
-                    ax.plot(roundNumAxis, distFreqs[:,d+(3*i)+1], label='d = '+str(d+(3*i)+1))
+                if(i==1):
+                    for d in range(2):
+                        ax.plot(roundNumAxis, distFreqs[:,d+(3*i)+1], 
+                                label='d = '+str(d+(3*i)+1))
+                elif(i==2):
+                    for d in range(4):
+                        ax.plot(roundNumAxis, distFreqs[:,d+(3*i)], 
+                                label='d = '+str(d+(3*i)))
+                else:
+                    for d in range(3):
+                        ax.plot(roundNumAxis, distFreqs[:,d+(3*i)+1], 
+                                label='d = '+str(d+(3*i)+1))
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*3+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -92,8 +102,18 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             # weighted fractional sequency plots
             fig2, axes = plt.subplots(2, 3)
             for i, ax in enumerate(axes.reshape(-1)):
-                for d in range(3):
-                    ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)+1], label='d = '+str(d+(3*i)+1))
+                if(i==1):
+                    for d in range(2):
+                        ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)+1], 
+                                label='d = '+str(d+(3*i)+1))
+                elif(i==2):
+                    for d in range(4):
+                        ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)], 
+                                label='d = '+str(d+(3*i)))
+                else:
+                    for d in range(3):
+                        ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)+1], 
+                                label='d = '+str(d+(3*i)+1))
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*3+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -179,7 +199,81 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             fig2.text(0.09, 0.35, '(e)', ha='center')
             fig2.text(0.507, 0.35, '(f)', ha='center')
             fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
+        elif(distanceMeasure=="loop"):
+            roundNumAxis = np.linspace(1, roundNum, roundNum)
+            fig0, axes = plt.subplots(2, 2)
+            cm = plt.cm.gist_ncar
+            plotsList = [total_seqs_freqs, uniq_seqs_freqs, weighted_avgDist_per_rnd, avgDist_per_rnd]
+            colors = [cm(i) for i in np.linspace(0, 0.9, seqLength+3)]
+            basic_colors = ['b', 'g', 'r', 'y']
+            for i, ax in enumerate(axes.reshape(-1)):
+                ax.plot(roundNumAxis, plotsList[i], color=basic_colors[i])
+                if(i==0 or i==1):
+                    ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+            fig0.text(0.5, 0.04, 'Round Number', ha='center')
+            fig0.text(0.04, 0.25, 'Average Distance', va='center', rotation='vertical')
+            fig0.text(0.04, 0.725, 'Frequency', va='center', rotation='vertical')
+            fig0.text(0.3, 0.95, 'Total Sequences', ha='center')
+            fig0.text(0.725, 0.95, 'Unique Sequences', ha='center')
+            fig0.text(0.07, 0.9, '(a)', ha='center')
+            fig0.text(0.07, 0.475, '(b)', ha='center')
+            fig0.text(0.507, 0.9, '(c)', ha='center')
+            fig0.text(0.507, 0.475, '(d)', ha='center')
+            fig0.savefig(str(outputFileNames)+"_SELEX_Analytics_distance", format='pdf')
+            fig1, axes = plt.subplots(2, 3)
+            for i, ax in enumerate(axes.reshape(-1)):
+                if(i==5):
+                    for d in range(6):
+                        ax.plot(roundNumAxis, distFreqs[:,d+(3*i)], 
+                                label='d = '+str(d+(3*i)))
+                else:
+                    for d in range(3):
+                        ax.plot(roundNumAxis, distFreqs[:,d+(3*i)], 
+                                label='d = '+str(d+(3*i)))
+                for j, line in enumerate(ax.lines):
+                    line.set_color(colors[i*3+j])
+                ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+                ax.tick_params(axis='x', labelsize=5)
+                ax.tick_params(axis='y', labelsize=5)
+                ax.legend(prop={'size':6})
+            fig1.text(0.5, 0.04, 'Round Number', ha='center')
+            fig1.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
+            fig1.text(0.5, 0.95, 'Unique Sequences', ha='center')
+            fig1.text(0.09, 0.9, '(a)', ha='center')
+            fig1.text(0.365, 0.9, '(b)', ha='center')
+            fig1.text(0.64, 0.9, '(c)', ha='center')
+            fig1.text(0.09, 0.475, '(d)', ha='center')
+            fig1.text(0.365, 0.475, '(e)', ha='center')
+            fig1.text(0.64, 0.475, '(f)', ha='center')
+            fig1.savefig(str(outputFileNames)+"_SELEX_Analytics_distFreqs", format='pdf')
+            # weighted fractional sequency plots
+            fig2, axes = plt.subplots(2, 3)
+            for i, ax in enumerate(axes.reshape(-1)):
+                if(i==5):
+                    for d in range(6):
+                        ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)], 
+                                label='d = '+str(d+(3*i)))
+                else:
+                    for d in range(3):
+                        ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)], 
+                                label='d = '+str(d+(3*i)))
+                for j, line in enumerate(ax.lines):
+                    line.set_color(colors[i*3+j])
+                ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+                ax.tick_params(axis='x', labelsize=5)
+                ax.tick_params(axis='y', labelsize=5)
+                ax.legend(prop={'size':6})
+            fig2.text(0.5, 0.04, 'Round Number', ha='center')
+            fig2.text(0.04, 0.5, 'Fractional Frequency', va='center', rotation='vertical')
+            fig2.text(0.5, 0.95, 'Total Sequences', ha='center')
+            fig2.text(0.09, 0.9, '(a)', ha='center')
+            fig2.text(0.365, 0.9, '(b)', ha='center')
+            fig2.text(0.64, 0.9, '(c)', ha='center')
+            fig2.text(0.09, 0.475, '(d)', ha='center')
+            fig2.text(0.365, 0.475, '(e)', ha='center')
+            fig2.text(0.64, 0.475, '(f)', ha='center')
+            fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
         else:
             return
 #TEST
-#dataAnalysis(20, 40, "he4_bp_small", True, "basepair")
+#dataAnalysis(20, 40, "he4_loop_small", True, "loop")
