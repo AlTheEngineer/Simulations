@@ -283,23 +283,23 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
                     with open(outputFileNames+"_R"+str(rnd+1)+"_dist_components_results", 'r') as p:
                         for line in p:
                             row = line.split()
-                            loop_dist = int(row[0])
-                            bp_dist = int(row[1])
-                            count = int(row[2])
-                            uniq = int(row[3])
-                            dist_matrx[rnd][loop_dist][bp_dist] += count
-                            uniq_dist_matrx[rnd][loop_dist][bp_dist] += uniq
+                            loop_dist = float(row[0])
+                            bp_dist = float(row[1])
+                            count = float(row[2])
+                            uniq = float(row[3])
+                            dist_matrx[rnd][int(loop_dist)][int(bp_dist)] += int(count)
+                            uniq_dist_matrx[rnd][int(loop_dist)][int(bp_dist)] += int(uniq)
                 fig3, axes = plt.subplots(2, 4)
                 for i, ax in enumerate(axes.reshape(-1)):
                     if(i == 0):
                         cax = ax.imshow(dist_matrx[i+1], interpolation='nearest', 
                                                                 cmap=cm.coolwarm)
-                        cbar = fig3.colorbar(cax, ticks=[np.min(dist_matrx[i+1]),np.max(dist_matrx[i+1])], ax=ax)
+                        cbar = fig3.colorbar(cax, ticks=[np.min(uniq_dist_matrx[i+1]),np.max(uniq_dist_matrx[i+1])], ax=ax)
                         ax.set_title('Round '+str(i+1))
                     else:
                         cax = ax.imshow(dist_matrx[i*5], interpolation='nearest', 
                                                                 cmap=cm.coolwarm)
-                        cbar = fig3.colorbar(cax, ticks=[np.min(dist_matrx[i*5]),np.max(dist_matrx[i*5])], ax=ax)
+                        cbar = fig3.colorbar(cax, ticks=[np.min(uniq_dist_matrx[i*5]),np.max(uniq_dist_matrx[i*5])], ax=ax)
                         ax.set_title('Round '+str(i*5))
                 fig3.savefig(str(outputFileNames)+"_SELEX_Analytics_dist_heatmap", format='pdf')
                 fig3.text(0.5, 0.98, 'Total Sequences', ha='center')
