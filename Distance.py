@@ -72,6 +72,31 @@ class Distance:
 #d = Distance()
 #seq_dist = d.loop_func(he4_seq, he4_struct, ex_seq)
 
+    def loop_components_func(self, seq1, seq1_struct, seq1_loop, seq2, seqLength):
+        seq2_struct = fold(seq2)[0]
+        base = None
+        baseIdx = 0
+        while(base != ')' and baseIdx < seqLength-1):
+            base = seq2_struct[baseIdx]
+            baseIdx += 1
+        if(baseIdx == seqLength-1):
+            while(base != '(' and baseIdx > 0):
+                base = seq2_struct[baseIdx-1]
+                baseIdx -= 1
+            if(baseIdx == 0):
+                seq2_loop = seq2
+            else:
+                seq2_loop = seq2[baseIdx:]
+        else:
+            loop_end = baseIdx-1
+            while(base != '('):
+                baseIdx -= 1
+                base = seq2_struct[baseIdx-1]
+            seq2_loop = seq2[baseIdx:loop_end]
+        seq2_loopDist = self.lavenshtein_func(seq1_loop, seq2_loop)
+        seq2_bpDist = bp_distance(seq1_struct, seq2_struct)
+        return seq2_loopDist, seq2_bpDist
+
     def bias_func(self, seq, seqLen):
         pyrNum = 0
         for nt in seq[:-1]:

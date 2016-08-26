@@ -4,9 +4,12 @@ import matplotlib
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+from matplotlib import cm
+import Distance
 
+Distance = Distance()
 
-def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
+def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, aptSeq=None, aptStruct=None, aptLoop=None):
     avgDist_per_rnd = np.zeros(roundNum)
     weighted_avgDist_per_rnd = np.zeros(roundNum)
     total_seqs_freqs = np.zeros(roundNum)
@@ -45,15 +48,15 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
                 p.write(str(int(distFreqs[rnd][l]))+'\t')
                 p.write(str(int(weighted_distFreqs[rnd][l]))+'\t')
             p.write('\n')
-    # If the user requested generating plots
+   # If the user requested generating plots
     if(plots==True):
         # If Hamming distances were used
         if(distanceMeasure=="hamming"):
             roundNumAxis = np.linspace(1, roundNum, roundNum)
             fig0, axes = plt.subplots(2, 2)
-            cm = plt.cm.gist_ncar
+            colormap = plt.cm.gist_ncar
             plotsList = [total_seqs_freqs, uniq_seqs_freqs, weighted_avgDist_per_rnd, avgDist_per_rnd]
-            colors = [cm(i) for i in np.linspace(0, 0.9, seqLength-1)]
+            colors = [colormap(i) for i in np.linspace(0, 0.9, seqLength-1)]
             basic_colors = ['b', 'g', 'r', 'y']
             for i, ax in enumerate(axes.reshape(-1)):
                 ax.plot(roundNumAxis, plotsList[i], color=basic_colors[i])
@@ -134,9 +137,9 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
         elif(distanceMeasure=="basepair"):
             roundNumAxis = np.linspace(1, roundNum, roundNum)
             # Plots for Average Distances and Sequence Frequencies 
-            cm = plt.cm.gist_ncar
+            colormap = plt.cm.gist_ncar
             plotsList = [total_seqs_freqs, uniq_seqs_freqs, weighted_avgDist_per_rnd, avgDist_per_rnd]
-            colors = [cm(i) for i in np.linspace(0, 0.9, seqLength-7)]
+            colors = [colormap(i) for i in np.linspace(0, 0.9, seqLength-7)]
             fig0, axes = plt.subplots(2, 2)
             basic_colors = ['b', 'g', 'r', 'y']
             for i, ax in enumerate(axes.reshape(-1)):
@@ -202,9 +205,9 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
         elif(distanceMeasure=="loop"):
             roundNumAxis = np.linspace(1, roundNum, roundNum)
             fig0, axes = plt.subplots(2, 2)
-            cm = plt.cm.gist_ncar
+            colormap = plt.cm.gist_ncar
             plotsList = [total_seqs_freqs, uniq_seqs_freqs, weighted_avgDist_per_rnd, avgDist_per_rnd]
-            colors = [cm(i) for i in np.linspace(0, 0.9, seqLength+3)]
+            colors = [colormap(i) for i in np.linspace(0, 0.9, seqLength+3)]
             basic_colors = ['b', 'g', 'r', 'y']
             for i, ax in enumerate(axes.reshape(-1)):
                 ax.plot(roundNumAxis, plotsList[i], color=basic_colors[i])
@@ -273,7 +276,59 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure):
             fig2.text(0.365, 0.475, '(e)', ha='center')
             fig2.text(0.64, 0.475, '(f)', ha='center')
             fig2.savefig(str(outputFileNames)+"_SELEX_Analytics_weighted_distFreqs", format='pdf')
+            if(aptSeq != None and aptStruct != None and aptLoop != None):
+                dist_matrx = np.zeros((roundNum, seqLength+1, seqLength-6))
+                uniq_dist_matrx = np.zeros((roundNum, seqLength+1, seqLength-6))
+                for rnd in xrange(roundNum):
+                    with open(outputFileNames+"_R"+str(rnd+1)+"_dist_components_results", 'r') as p:
+                        for line in p:
+                            row = line.split()
+                            loop_dist = int(row[0])
+                            bp_dist = int(row[1])
+                            count = int(row[2])
+                            uniq = int(row[3])
+                            dist_matrx[rnd][loop_dist][bp_dist] += count
+                            uniq_dist_matrx[rnd][loop_dist][bp_dist] += uniq
+                fig3, axes = plt.subplots(2, 4)
+                for i, ax in enumerate(axes.reshape(-1)):
+                    if(i == 0):
+                        cax = ax.imshow(dist_matrx[i+1], interpolation='nearest', 
+                                                                cmap=cm.coolwarm)
+                        cbar = fig3.colorbar(cax, ticks=[np.min(dist_matrx[i+1]),np.max(dist_matrx[i+1])], ax=ax)
+                        ax.set_title('Round '+str(i+1))
+                    else:
+                        cax = ax.imshow(dist_matrx[i*5], interpolation='nearest', 
+                                                                cmap=cm.coolwarm)
+                        cbar = fig3.colorbar(cax, ticks=[np.min(dist_matrx[i*5]),np.max(dist_matrx[i*5])], ax=ax)
+                        ax.set_title('Round '+str(i*5))
+                fig3.savefig(str(outputFileNames)+"_SELEX_Analytics_dist_heatmap", format='pdf')
+                fig3.text(0.5, 0.98, 'Total Sequences', ha='center')
+
         else:
             return
 #TEST
-#dataAnalysis(20, 40, "he4_loop_small", True, "loop")
+fig = dataAnalysis(20, 40, "he4_loop_small", True, "loop", "GTACGACAGTCATCCTACAC", "(((.((......)).)))..", "CAGTCA")
+#PUT IN SEPARATE POST-PROCESSING SCRIPT
+'''
+if(distanceMeasure == 'loop'):
+        if(aptSeq != None and aptStruct != None and aptLoop != None):
+            dist_matrx = np.zeros((roundNum, seqLength+1, seqLength-6))
+            uniq_dist_matrx = np.zeros((roundNum, seqLength+1, seqLength-6))
+            for rnd in xrange(roundNum):
+                with open(outputFileNames+"_R"+str(rnd+1)) as SELEX_round:
+                    for line in SELEX_round:
+                        row = line.split()
+                        seq = str(row[0])
+                        count = int(row[1])
+                        loop_dist, bp_dist = Distance.loop_components_func(aptSeq, aptStruct, 
+                                                                  aptLoop, seq, 
+                                                                  seqLength)
+                        dist_matrx[rnd][loop_dist][bp_dist] += count
+                        uniq_dist_matrx[rnd][loop_dist][bp_dist] += 1
+                with open(outputFileNames+"_R"+str(rnd+1)+"_dist_components_results", 'w') as p:
+                        for loop_dist in xrange(seqLength+1):
+                            for bp_dist in xrange(seqLength-6):
+                                p.write(str(loop_dist)+'\t'+str(bp_dist)+'\t'+str(dist_matrx[rnd][loop_dist][bp_dist])+'\t'+str(uniq_dist_matrx[rnd][loop_dist][bp_dist])+'\n')
+    else:
+        print("The sequence, structure, and loop region of the reference aptamer were not given. Thus, heat maps of the Loop-based and BP distances will not be generated.")
+'''
