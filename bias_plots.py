@@ -28,7 +28,7 @@ def generate_bias_plot(fileNames, roundNum, seqLength):
     fig0.text(0.507, 0.9, '(b)', ha='center')
     fig0.savefig(str(fileNames)+"_SELEX_Analytics_bias", format='pdf')
 
-generate_bias_plot('he4_loop_small', 40, 20)
+#generate_bias_plot('he4_loop_small', 40, 20)
 
 
 def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
@@ -50,7 +50,7 @@ def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
                 ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d+1))
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             if(i==0):
-                ax.legend(loc=2, ncol=4, prop={'size':7})
+                ax.legend(loc=2, ncol=4, prop={'size':5})
         fig0.text(0.53, 0.02, 'Round Number', ha='center')
         fig0.text(0.5, 0.96, 'Total Sequences', ha='center')
         fig0.text(0.5, 0.48, 'Unique Sequences', ha='center')
@@ -75,7 +75,7 @@ def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
                 ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d))
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             if(i==0):
-                ax.legend(loc=2, ncol=4, prop={'size':7})
+                ax.legend(loc=2, ncol=4, prop={'size':5})
         fig0.text(0.53, 0.02, 'Round Number', ha='center')
         fig0.text(0.5, 0.96, 'Total Sequences', ha='center')
         fig0.text(0.5, 0.48, 'Unique Sequences', ha='center')
@@ -100,7 +100,7 @@ def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
                 ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d))
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             if(i==0):
-                ax.legend(loc=2, ncol=4, prop={'size':10})
+                ax.legend(loc=2, ncol=4, prop={'size':5})
         fig0.text(0.53, 0.02, 'Round Number', ha='center')
         fig0.text(0.5, 0.96, 'Total Sequences', ha='center')
         fig0.text(0.5, 0.48, 'Unique Sequences', ha='center')
@@ -113,4 +113,4 @@ def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
         print("Invalid distance metric. Exiting...")
         return 0
 
-fig = generate_bias_per_dist_plot('he4_loop_small', 40, 20, "loop")
+#fig = generate_bias_per_dist_plot('he4_loop_small', 40, 20, "loop")
