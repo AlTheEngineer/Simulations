@@ -7,7 +7,7 @@ import matplotlib.ticker as mtick
 from matplotlib import cm
 import Distance
 
-Distance = Distance()
+D = Distance.Distance()
 
 def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, aptSeq=None, aptStruct=None, aptLoop=None):
     avgDist_per_rnd = np.zeros(roundNum)
@@ -307,7 +307,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
         else:
             return
 #TEST
-fig = dataAnalysis(20, 40, "he4_loop_small", True, "loop", "GTACGACAGTCATCCTACAC", "(((.((......)).)))..", "CAGTCA")
+#fig = dataAnalysis(20, 40, "he4_loop_small", True, "loop", "GTACGACAGTCATCCTACAC", "(((.((......)).)))..", "CAGTCA")
 #PUT IN SEPARATE POST-PROCESSING SCRIPT
 '''
 if(distanceMeasure == 'loop'):
@@ -320,7 +320,7 @@ if(distanceMeasure == 'loop'):
                         row = line.split()
                         seq = str(row[0])
                         count = int(row[1])
-                        loop_dist, bp_dist = Distance.loop_components_func(aptSeq, aptStruct, 
+                        loop_dist, bp_dist = D.loop_components_func(aptSeq, aptStruct, 
                                                                   aptLoop, seq, 
                                                                   seqLength)
                         dist_matrx[rnd][loop_dist][bp_dist] += count

@@ -1,4 +1,4 @@
-import time
+import sys, time
 import random
 import linecache
 import math

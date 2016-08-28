@@ -663,7 +663,7 @@ class Mutation(object):
         # compute 2D structure of aptamer(s)
         aptamerSeqsStruct = fold(aptamerSeqs)[0]
         # find loop in 2D structure
-        aptamerLoop = apt_loopFinder(aptamerSeqs, aptamerSeqsStruct)
+        aptamerLoop = apt_loopFinder(aptamerSeqs, aptamerSeqsStruct, seqLength)
         # for each seq in the mutation pool
         for seqIdx in mutatedPool:
             # grab probabilities to draw it after each pcr cycle
