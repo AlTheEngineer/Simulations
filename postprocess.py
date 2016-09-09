@@ -73,19 +73,20 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
             fig0.text(0.507, 0.475, '(d)', ha='center')
             fig0.savefig(str(outputFileNames)+"_SELEX_Analytics_distance", format='pdf')
             fig1, axes = plt.subplots(2, 3)
+            markers = ['o', 'x', '^']
             for i, ax in enumerate(axes.reshape(-1)):
                 if(i==1):
                     for d in range(2):
                         ax.plot(roundNumAxis, distFreqs[:,d+(3*i)+1], 
-                                label='d = '+str(d+(3*i)+1))
+                                label='d = '+str(d+(3*i)+1), marker=markers[d], markevery=5)
                 elif(i==2):
                     for d in range(4):
                         ax.plot(roundNumAxis, distFreqs[:,d+(3*i)], 
-                                label='d = '+str(d+(3*i)))
+                                label='d = '+str(d+(3*i)), marker=markers[d%3], markevery=5)
                 else:
                     for d in range(3):
                         ax.plot(roundNumAxis, distFreqs[:,d+(3*i)+1], 
-                                label='d = '+str(d+(3*i)+1))
+                                label='d = '+str(d+(3*i)+1), marker=markers[d], markevery=5)
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*3+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -108,15 +109,15 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
                 if(i==1):
                     for d in range(2):
                         ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)+1], 
-                                label='d = '+str(d+(3*i)+1))
+                                label='d = '+str(d+(3*i)+1), marker=markers[d], markevery=5)
                 elif(i==2):
                     for d in range(4):
                         ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)], 
-                                label='d = '+str(d+(3*i)))
+                                label='d = '+str(d+(3*i)), marker=markers[d%3], markevery=5)
                 else:
                     for d in range(3):
                         ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)+1], 
-                                label='d = '+str(d+(3*i)+1))
+                                label='d = '+str(d+(3*i)+1), marker=markers[d], markevery=5)
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*3+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -158,9 +159,10 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
             fig0.savefig(str(outputFileNames)+"_SELEX_Analytics_distance", format='pdf')
             # Plots for distance analytics
             fig1, axes = plt.subplots(3, 2)
+            markers = ['o', 'x', '^']
             for i, ax in enumerate(axes.reshape(-1)):
                 for d in range(2):
-                    ax.plot(roundNumAxis, distFreqs[:,d+(2*i)], label='d = '+str(d+(2*i)))
+                    ax.plot(roundNumAxis, distFreqs[:,d+(2*i)], label='d = '+str(d+(2*i)), marker=markers[d], markevery=5)
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*2+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -183,7 +185,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
             fig2, axes = plt.subplots(3, 2)
             for i, ax in enumerate(axes.reshape(-1)):
                 for d in range(2):
-                    ax.plot(roundNumAxis, weighted_distFreqs[:,d+(2*i)], label='d = '+str(d+(2*i)))
+                    ax.plot(roundNumAxis, weighted_distFreqs[:,d+(2*i)], label='d = '+str(d+(2*i)), marker=markers[d], markevery=5)
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*2+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -224,15 +226,16 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
             fig0.text(0.507, 0.475, '(d)', ha='center')
             fig0.savefig(str(outputFileNames)+"_SELEX_Analytics_distance", format='pdf')
             fig1, axes = plt.subplots(2, 3)
+            markers = ['o', 'x', '^']
             for i, ax in enumerate(axes.reshape(-1)):
                 if(i==5):
                     for d in range(6):
                         ax.plot(roundNumAxis, distFreqs[:,d+(3*i)], 
-                                label='d = '+str(d+(3*i)))
+                                label='d = '+str(d+(3*i)), marker=markers[d%3], markevery=5)
                 else:
                     for d in range(3):
                         ax.plot(roundNumAxis, distFreqs[:,d+(3*i)], 
-                                label='d = '+str(d+(3*i)))
+                                label='d = '+str(d+(3*i)), marker=markers[d], markevery=5)
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*3+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -255,11 +258,11 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
                 if(i==5):
                     for d in range(6):
                         ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)], 
-                                label='d = '+str(d+(3*i)))
+                                label='d = '+str(d+(3*i)), marker=markers[d%3], markevery=5)
                 else:
                     for d in range(3):
                         ax.plot(roundNumAxis, weighted_distFreqs[:,d+(3*i)], 
-                                label='d = '+str(d+(3*i)))
+                                label='d = '+str(d+(3*i)), marker=markers[d], markevery=5)
                 for j, line in enumerate(ax.lines):
                     line.set_color(colors[i*3+j])
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -307,7 +310,7 @@ def dataAnalysis(seqLength, roundNum, outputFileNames, plots, distanceMeasure, a
         else:
             return
 #TEST
-#fig = dataAnalysis(20, 40, "he4_loop_small", True, "loop", "GTACGACAGTCATCCTACAC", "(((.((......)).)))..", "CAGTCA")
+fig = dataAnalysis(20, 40, "he4_bp_small", True, "basepair")
 #PUT IN SEPARATE POST-PROCESSING SCRIPT
 '''
 if(distanceMeasure == 'loop'):

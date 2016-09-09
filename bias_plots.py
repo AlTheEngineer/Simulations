@@ -40,23 +40,21 @@ def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
         roundNumAxis = np.linspace(0, roundNum, roundNum)
         roundNumAxis_smooth = np.linspace(0, roundNum, 200)
         y_smooth = np.zeros(roundNum)
-        plotsList = [weighted_bias_per_rnd[1:seqLength-1], bias_per_rnd[1:seqLength-1]]
-        fig0, axes = plt.subplots(2, 1)
+        plotsList = [weighted_bias_per_rnd[1:seqLength-1]]
+        fig0, ax = plt.subplots(1, 1)
         cm = plt.cm.gist_ncar
         colors = [cm(i) for i in np.linspace(0, 0.9, seqLength-1)]
-        for i, ax in enumerate(axes.reshape(-1)):
+        markers = ['x','o', '^', '>', 's']
+        for i in xrange(1):
             for d in xrange(seqLength-2):
-                y_smooth = spline(roundNumAxis, plotsList[i][d], roundNumAxis_smooth)
-                ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d+1))
+                y_smooth = spline(roundNumAxis, plotsList[0][d], roundNumAxis_smooth)
+                ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d+1), marker=markers[d%5], markevery=25)
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             if(i==0):
-                ax.legend(loc=2, ncol=4, prop={'size':5})
+                ax.legend(loc=2, ncol=4, prop={'size':8})
         fig0.text(0.53, 0.02, 'Round Number', ha='center')
         fig0.text(0.5, 0.96, 'Total Sequences', ha='center')
-        fig0.text(0.5, 0.48, 'Unique Sequences', ha='center')
         fig0.text(0.01, 0.5, 'Average Bias', va='center', rotation='vertical')
-        fig0.text(0.07, 0.98, '(a)', ha='center')
-        fig0.text(0.07, 0.5, '(b)', ha='center')
         fig0.savefig(str(fileNames)+"_SELEX_Analytics_biasDist", format='pdf')
         return fig0
     elif(distance=="basepair"):
@@ -65,23 +63,21 @@ def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
         roundNumAxis = np.linspace(0, roundNum, roundNum)
         roundNumAxis_smooth = np.linspace(0, roundNum, 200)
         y_smooth = np.zeros(roundNum)
-        plotsList = [weighted_bias_per_rnd[:seqLength-8], bias_per_rnd[:seqLength-8]]
-        fig0, axes = plt.subplots(2, 1)
+        plotsList = [weighted_bias_per_rnd[:seqLength-8]]
+        fig0, ax = plt.subplots(1, 1)
         cm = plt.cm.gist_ncar
         colors = [cm(i) for i in np.linspace(0, 0.9, seqLength-8)]
-        for i, ax in enumerate(axes.reshape(-1)):
+        markers = ['x','o', '^', '>', 's']
+        for i in xrange(1):
             for d in xrange(seqLength-8):
-                y_smooth = spline(roundNumAxis, plotsList[i][d], roundNumAxis_smooth)
-                ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d))
+                y_smooth = spline(roundNumAxis, plotsList[0][d], roundNumAxis_smooth)
+                ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d), marker=markers[d%5], markevery=25)
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             if(i==0):
-                ax.legend(loc=2, ncol=4, prop={'size':5})
+                ax.legend(loc=2, ncol=4, prop={'size':8})
         fig0.text(0.53, 0.02, 'Round Number', ha='center')
         fig0.text(0.5, 0.96, 'Total Sequences', ha='center')
-        fig0.text(0.5, 0.48, 'Unique Sequences', ha='center')
         fig0.text(0.01, 0.5, 'Average Bias', va='center', rotation='vertical')
-        fig0.text(0.07, 0.98, '(a)', ha='center')
-        fig0.text(0.07, 0.5, '(b)', ha='center')
         fig0.savefig(str(fileNames)+"_SELEX_Analytics_biasDist", format='pdf')
         return fig0
     elif(distance=="loop"):
@@ -90,27 +86,25 @@ def generate_bias_per_dist_plot(fileNames, roundNum, seqLength, distance):
         roundNumAxis = np.linspace(0, roundNum, roundNum)
         roundNumAxis_smooth = np.linspace(0, roundNum, 200)
         y_smooth = np.zeros(roundNum)
-        plotsList = [weighted_bias_per_rnd[:seqLength+1], bias_per_rnd[:seqLength+1]]
-        fig0, axes = plt.subplots(2, 1)
+        plotsList = [weighted_bias_per_rnd[:seqLength+1]]
+        fig0, ax = plt.subplots(1, 1)
         cm = plt.cm.gist_ncar
         colors = [cm(i) for i in np.linspace(0.1, 0.9, seqLength+1)]
-        for i, ax in enumerate(axes.reshape(-1)):
+        markers = ['x','o', '^', '>', 's']
+        for i in xrange(1):
             for d in xrange(seqLength+1):
-                y_smooth = spline(roundNumAxis, plotsList[i][d], roundNumAxis_smooth)
-                ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d))
+                y_smooth = spline(roundNumAxis, plotsList[0][d], roundNumAxis_smooth)
+                ax.plot(roundNumAxis_smooth, y_smooth, color=colors[d], label=str(d), marker=markers[d%5], markevery=25)
                 ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             if(i==0):
-                ax.legend(loc=2, ncol=4, prop={'size':5})
+                ax.legend(loc=2, ncol=4, prop={'size':8})
         fig0.text(0.53, 0.02, 'Round Number', ha='center')
         fig0.text(0.5, 0.96, 'Total Sequences', ha='center')
-        fig0.text(0.5, 0.48, 'Unique Sequences', ha='center')
         fig0.text(0.01, 0.5, 'Average Bias', va='center', rotation='vertical')
-        fig0.text(0.07, 0.98, '(a)', ha='center')
-        fig0.text(0.07, 0.5, '(b)', ha='center')
         fig0.savefig(str(fileNames)+"_SELEX_Analytics_biasDist", format='pdf')
         return fig0
     else:
         print("Invalid distance metric. Exiting...")
         return 0
 
-#fig = generate_bias_per_dist_plot('he4_loop_small', 40, 20, "loop")
+fig = generate_bias_per_dist_plot('he4_loop_small', 40, 20, "loop")
